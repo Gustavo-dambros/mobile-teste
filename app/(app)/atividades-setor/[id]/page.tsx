@@ -9,7 +9,7 @@ export default async function Page({
 }) {
   const { id } = await params
   return (
-    <DashboardShell title="Atividade">
+    <DashboardShell>
       <AtividadesSetorProvider>
         <ActivityDetailPage eventId={id} />
       </AtividadesSetorProvider>

@@ -8,7 +8,7 @@ export default async function Page({
 }) {
   const { id } = await params
   return (
-    <DashboardShell title="Chamado">
+    <DashboardShell>
       <TicketChatPage ticketId={id} variant="queue" />
     </DashboardShell>
   )

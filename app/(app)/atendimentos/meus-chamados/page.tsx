@@ -3,7 +3,7 @@ import { TicketsPage } from "@/components/tickets/TicketsPage"
 
 export default function Page() {
   return (
-    <DashboardShell title="Meus Chamados">
+    <DashboardShell>
       <TicketsPage />
     </DashboardShell>
   )

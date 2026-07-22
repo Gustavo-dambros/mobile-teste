@@ -42,18 +42,23 @@ export function ConversationList({
   onSelect,
   onNewConversation,
   onNewGroup,
+  hideHeader = false,
+  externalSearch,
 }: {
   scope: ConversationKind
   activeConversationId: string | null
   onSelect: (id: string) => void
   onNewConversation: () => void
   onNewGroup: () => void
+  hideHeader?: boolean
+  externalSearch?: string
 }) {
   const reduced = useReducedMotion()
   const { conversations, getMessagesFor, getUnreadCount, hasUnread } = useChatInterno()
   const roster = useChatRoster()
   const rosterById = React.useMemo(() => new Map(roster.map((m) => [m.id, m])), [roster])
-  const [search, setSearch] = React.useState("")
+  const [internalSearch, setInternalSearch] = React.useState("")
+  const search = externalSearch ?? internalSearch
 
   const items = conversations
     .filter((c) => c.kind === scope && !c.leftAt)
@@ -73,28 +78,30 @@ export function ConversationList({
 
   return (
     <div className="flex h-full flex-col">
-      <div className="flex items-center gap-2 border-b p-3">
-        <div className="relative flex-1">
-          <SearchIcon className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Buscar conversa"
-            className="pl-8"
-          />
+      {!hideHeader && (
+        <div className="flex items-center gap-2 border-b p-3">
+          <div className="relative flex-1">
+            <SearchIcon className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              value={externalSearch ?? internalSearch}
+              onChange={(e) => setInternalSearch(e.target.value)}
+              placeholder="Buscar conversa"
+              className="pl-8"
+            />
+          </div>
+          {scope === "dm" ? (
+            <Button type="button" size="icon" variant="outline" onClick={onNewConversation}>
+              <PlusIcon />
+              <span className="sr-only">Nova conversa</span>
+            </Button>
+          ) : (
+            <Button type="button" size="icon" variant="outline" onClick={onNewGroup}>
+              <UsersIcon />
+              <span className="sr-only">Novo grupo</span>
+            </Button>
+          )}
         </div>
-        {scope === "dm" ? (
-          <Button type="button" size="icon" variant="outline" onClick={onNewConversation}>
-            <PlusIcon />
-            <span className="sr-only">Nova conversa</span>
-          </Button>
-        ) : (
-          <Button type="button" size="icon" variant="outline" onClick={onNewGroup}>
-            <UsersIcon />
-            <span className="sr-only">Novo grupo</span>
-          </Button>
-        )}
-      </div>
+      )}
 
       <motion.div
         variants={cardsContainer(reduced, 0.05)}

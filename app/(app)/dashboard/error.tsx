@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 
 export default function Error({ reset }: { error: Error & { digest?: string }; reset: () => void }) {
   return (
-    <DashboardShell title="Dashboard">
+    <DashboardShell>
       <div className="flex flex-1 flex-col items-center justify-center gap-3 p-6 text-center">
         <AlertTriangleIcon className="size-8 text-destructive" />
         <h1 className="text-base font-semibold">Não foi possível carregar o dashboard</h1>

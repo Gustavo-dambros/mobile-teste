@@ -3,7 +3,7 @@ import { KanbanPage } from "@/components/kanban/KanbanPage"
 
 export default function Page() {
   return (
-    <DashboardShell title="Kanban">
+    <DashboardShell>
       <KanbanPage />
     </DashboardShell>
   )

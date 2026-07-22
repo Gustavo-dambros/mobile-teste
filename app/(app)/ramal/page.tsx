@@ -3,7 +3,7 @@ import { RamalList } from "@/components/ramal/RamalList"
 
 export default function Page() {
   return (
-    <DashboardShell title="Ramal">
+    <DashboardShell>
       <RamalList />
     </DashboardShell>
   )

@@ -4,7 +4,7 @@ import { AtividadesSetorPage } from "@/components/atividades-setor/AtividadesSet
 
 export default function Page() {
   return (
-    <DashboardShell title="Atividades do Setor">
+    <DashboardShell>
       <AtividadesSetorProvider>
         <AtividadesSetorPage />
       </AtividadesSetorProvider>

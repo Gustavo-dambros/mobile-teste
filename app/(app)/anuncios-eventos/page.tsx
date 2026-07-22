@@ -3,7 +3,7 @@ import { AnnouncementsPage } from "@/components/announcements/AnnouncementsPage"
 
 export default function Page() {
   return (
-    <DashboardShell title="Anúncios/Eventos">
+    <DashboardShell>
       <AnnouncementsPage />
     </DashboardShell>
   )

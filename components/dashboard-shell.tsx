@@ -2,18 +2,12 @@ import type { ReactNode } from "react"
 
 import { SiteHeader } from "@/components/site-header"
 
-export function DashboardShell({
-  title,
-  children,
-}: {
-  title: string
-  children: ReactNode
-}) {
+export function DashboardShell({ children }: { children: ReactNode }) {
   return (
     <>
-      <SiteHeader title={title} />
+      <SiteHeader />
       <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
-        <div className="@container/main flex min-h-0 flex-1 flex-col gap-2">
+        <div className="@container/main flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto">
           {children}
         </div>
       </div>

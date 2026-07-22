@@ -109,7 +109,6 @@ export function TicketsPage() {
           </div>
           <TicketFilters value={filters} onChange={setFilters} />
         </div>
-        <Button onClick={openCreateDialog}>Iniciar Atendimento</Button>
       </div>
 
       <div className="min-h-0 flex-1 overflow-hidden">
@@ -139,6 +138,15 @@ export function TicketsPage() {
         onPageChange={setPage}
         totalCount={filteredTickets.length}
       />
+
+      <div className="fixed bottom-16 left-0 right-0 border-t border-border bg-card p-4 md:hidden">
+        <Button
+          className="w-full h-14 text-base font-semibold"
+          onClick={openCreateDialog}
+        >
+          Iniciar Atendimento
+        </Button>
+      </div>
 
       <EditTicketDialog
         ticket={editingTicket}

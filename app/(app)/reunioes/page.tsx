@@ -3,7 +3,7 @@ import { ReunioesPage } from "@/components/reunioes/ReunioesPage"
 
 export default function Page() {
   return (
-    <DashboardShell title="Reuniões">
+    <DashboardShell>
       <ReunioesPage />
     </DashboardShell>
   )

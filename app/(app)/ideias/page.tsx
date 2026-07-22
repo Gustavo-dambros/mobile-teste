@@ -3,7 +3,7 @@ import { ComingSoon } from "@/components/coming-soon"
 
 export default function Page() {
   return (
-    <DashboardShell title="Ideias">
+    <DashboardShell>
       <ComingSoon label="Ideias" />
     </DashboardShell>
   )

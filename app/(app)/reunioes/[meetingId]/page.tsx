@@ -8,7 +8,7 @@ export default async function Page({
 }) {
   const { meetingId } = await params
   return (
-    <DashboardShell title="Reunião">
+    <DashboardShell>
       <AuthenticatedMeetingRoom meetingId={meetingId} />
     </DashboardShell>
   )

@@ -3,7 +3,7 @@ import { AdministracaoPage } from "@/components/administracao/AdministracaoPage"
 
 export default function Page() {
   return (
-    <DashboardShell title="Administração">
+    <DashboardShell>
       <AdministracaoPage />
     </DashboardShell>
   )

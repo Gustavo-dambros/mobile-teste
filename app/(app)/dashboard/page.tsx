@@ -15,7 +15,7 @@ export default async function Page() {
   ])
 
   return (
-    <DashboardShell title="Dashboard">
+    <DashboardShell>
       <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
         {metrics ? (
           <SectionCards metrics={metrics} />

@@ -92,7 +92,7 @@ export function MessageInput({
   }
 
   return (
-    <div className="flex flex-col gap-2 border-t bg-background px-4 py-3 lg:px-6">
+    <div className="flex flex-col gap-2 border-t bg-background px-4 py-3 pb-20 lg:px-6">
       <div className="flex items-end gap-2">
         <input
           ref={fileInputRef}
@@ -106,11 +106,11 @@ export function MessageInput({
           type="button"
           variant="ghost"
           size="icon"
-          className="shrink-0"
+          className="shrink-0 h-10 w-10"
           disabled={disabled}
           onClick={() => fileInputRef.current?.click()}
         >
-          <PaperclipIcon />
+          <PaperclipIcon className="h-5 w-5" />
           <span className="sr-only">Anexar arquivo</span>
         </Button>
         {showCannedResponses && !disabled && (
@@ -131,16 +131,16 @@ export function MessageInput({
           }
           disabled={disabled}
           rows={1}
-          className="min-h-9 max-h-[120px] flex-1 resize-none overflow-y-auto py-2"
+          className="min-h-9 max-h-16 flex-1 resize-none overflow-y-auto py-2"
         />
         <Button
           type="button"
           size="icon"
-          className="shrink-0"
+          className="shrink-0 h-10 w-10"
           disabled={disabled || !text.trim()}
           onClick={handleSend}
         >
-          <SendIcon />
+          <SendIcon className="h-5 w-5" />
           <span className="sr-only">Enviar mensagem</span>
         </Button>
       </div>

@@ -5,9 +5,9 @@ import { AlertTriangleIcon } from "lucide-react"
 import { DashboardShell } from "@/components/dashboard-shell"
 import { Button } from "@/components/ui/button"
 
-export function RouteError({ title, reset }: { title: string; reset: () => void }) {
+export function RouteError({ reset }: { reset: () => void }) {
   return (
-    <DashboardShell title={title}>
+    <DashboardShell>
       <div className="flex flex-1 flex-col items-center justify-center gap-3 p-6 text-center">
         <AlertTriangleIcon className="size-8 text-destructive" />
         <h1 className="text-base font-semibold">Não foi possível carregar esta página</h1>

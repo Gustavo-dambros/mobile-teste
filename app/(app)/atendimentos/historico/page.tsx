@@ -3,7 +3,7 @@ import { HistoryTicketsPage } from "@/components/tickets/HistoryTicketsPage"
 
 export default function Page() {
   return (
-    <DashboardShell title="Histórico">
+    <DashboardShell>
       <HistoryTicketsPage />
     </DashboardShell>
   )

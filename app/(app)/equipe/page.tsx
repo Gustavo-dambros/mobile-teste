@@ -6,7 +6,7 @@ export default async function Page() {
   const members = await getTeamDirectory()
 
   return (
-    <DashboardShell title="Equipe">
+    <DashboardShell>
       <TeamPage members={members} />
     </DashboardShell>
   )

@@ -1,33 +1,24 @@
 "use client"
 
-import { motion, useReducedMotion } from "motion/react"
+import { useRouter } from "next/navigation"
+import { User } from "lucide-react"
 
-import { pageHeader } from "@/lib/motion"
-import { Separator } from "@/components/ui/separator"
-import { SidebarTrigger } from "@/components/ui/sidebar"
-import { ThemeToggle } from "@/components/theme-toggle"
+import { Button } from "@/components/ui/button"
 
-export function SiteHeader({ title }: { title: string }) {
-  const reduced = useReducedMotion()
+export function SiteHeader() {
+  const router = useRouter()
+
   return (
-    <header className="flex h-(--header-height) shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height)">
-      <div className="flex w-full items-center gap-1 px-4 lg:gap-2 lg:px-6">
-        <SidebarTrigger className="-ml-1" />
-        <Separator
-          orientation="vertical"
-          className="mx-2 h-4 data-vertical:self-auto"
-        />
-        <motion.h1
-          variants={pageHeader(reduced)}
-          initial="hidden"
-          animate="show"
-          className="text-base font-medium"
+    <header className="flex h-(--header-height) shrink-0 items-center border-b">
+      <div className="flex w-full items-center justify-between px-4 lg:px-6">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => router.push("/perfil")}
+          className="h-12 w-12"
         >
-          {title}
-        </motion.h1>
-        <div className="ml-auto flex items-center gap-2">
-          <ThemeToggle />
-        </div>
+          <User className="h-6 w-6" />
+        </Button>
       </div>
     </header>
   )

@@ -3,6 +3,7 @@ import { redirect } from "next/navigation"
 
 import { AppSidebar } from "@/components/app-sidebar"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
+import BottomNav from "@/components/bottom-navigation"
 import { TicketsProvider } from "@/lib/tickets/store"
 import { AnnouncementsProvider } from "@/lib/announcements/store"
 import { KanbanProvider } from "@/lib/kanban/store"
@@ -48,6 +49,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
                         >
                           <AppSidebar variant="inset" />
                           <SidebarInset>{children}</SidebarInset>
+                          <BottomNav />
                         </SidebarProvider>
                       </ExtensionsProvider>
                     </SystemNotificationsProvider>

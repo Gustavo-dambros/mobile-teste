@@ -3,7 +3,7 @@ import { QueueTicketsPage } from "@/components/tickets/QueueTicketsPage"
 
 export default function Page() {
   return (
-    <DashboardShell title="Chamados">
+    <DashboardShell>
       <QueueTicketsPage />
     </DashboardShell>
   )

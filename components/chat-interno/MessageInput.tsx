@@ -33,10 +33,6 @@ export function MessageInput({
   function handleTextChange(value: string) {
     setText(value)
     if (!value.trim()) return
-    // The receiver's typing indicator has a 3s TTL (lib/chat-interno/store.tsx),
-    // so broadcasting at most once every 2s per conversation is enough to keep
-    // it alive continuously while the user keeps typing, instead of firing a
-    // realtime broadcast on every keystroke.
     const last = lastTypingBroadcastRef.current
     const now = Date.now()
     if (last && last.conversationId === conversationId && now - last.at < 2000) return
@@ -85,11 +81,11 @@ export function MessageInput({
   }
 
   return (
-    <div className="flex flex-col gap-2 border-t p-3">
+    <div className="flex flex-col gap-2 bg-background p-2 pb-20">
       {replyTo && (
-        <div className="flex items-center justify-between gap-2 rounded-lg border-l-2 border-primary bg-muted/60 px-3 py-1.5 text-xs">
+        <div className="flex items-center justify-between gap-2 rounded-xl border-l-4 border-primary bg-muted/80 px-3 py-2 text-xs">
           <div className="flex min-w-0 flex-col">
-            <span className="font-medium">{replyTo.authorName}</span>
+            <span className="font-semibold text-primary">{replyTo.authorName}</span>
             <span className="truncate text-muted-foreground">
               {replyTo.deletedForEveryone ? "Mensagem apagada" : replyTo.text}
             </span>
@@ -104,7 +100,7 @@ export function MessageInput({
       {attachments.length > 0 && (
         <div className="flex flex-wrap gap-2">
           {attachments.map((att) => (
-            <div key={att.id} className="flex items-center gap-1.5 rounded-lg border bg-muted/40 px-2 py-1 text-xs">
+            <div key={att.id} className="flex items-center gap-1.5 rounded-full border bg-muted/60 px-3 py-1 text-xs">
               <span className="max-w-32 truncate">{att.name}</span>
               <span className="text-muted-foreground">{formatFileSize(att.size)}</span>
               <button type="button" onClick={() => removeAttachment(att.id)} className="rounded-full p-0.5 hover:bg-foreground/10">
@@ -117,9 +113,9 @@ export function MessageInput({
       )}
 
       {recorder.recording ? (
-        <div className="flex items-center gap-3 rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2">
-          <span className="flex size-2.5 shrink-0 animate-pulse rounded-full bg-destructive" />
-          <span className="flex-1 text-sm text-destructive">
+        <div className="flex items-center gap-3 rounded-2xl border border-destructive/30 bg-destructive/5 px-4 py-3">
+          <span className="flex size-3 shrink-0 animate-pulse rounded-full bg-destructive" />
+          <span className="flex-1 text-sm font-medium text-destructive">
             Gravando... {Math.floor(recorder.durationSeconds)}s
           </span>
           <Button type="button" variant="ghost" size="icon-sm" onClick={recorder.cancel}>
@@ -132,7 +128,7 @@ export function MessageInput({
           </Button>
         </div>
       ) : (
-        <div className="flex items-end gap-1.5">
+        <div className="flex items-end gap-2 rounded-2xl bg-muted/50 p-1.5">
           <EmojiPickerPopover onPick={(emoji) => setText((prev) => prev + emoji)} />
           <input
             ref={fileInputRef}
@@ -142,8 +138,14 @@ export function MessageInput({
             onChange={handlePickFiles}
             className="hidden"
           />
-          <Button type="button" variant="ghost" size="icon" onClick={() => fileInputRef.current?.click()}>
-            <PaperclipIcon />
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            className="h-10 w-10 shrink-0 rounded-full"
+            onClick={() => fileInputRef.current?.click()}
+          >
+            <PaperclipIcon className="h-5 w-5" />
             <span className="sr-only">Anexar arquivo</span>
           </Button>
           <Textarea
@@ -155,18 +157,31 @@ export function MessageInput({
                 handleSend()
               }
             }}
-            placeholder="Escreva uma mensagem..."
+            placeholder="Digite uma mensagem"
             rows={1}
-            className={cn("max-h-32 flex-1 resize-none")}
+            className={cn(
+              "min-h-[40px] max-h-24 flex-1 resize-none rounded-2xl border-0 bg-background px-4 py-2.5 text-sm shadow-sm focus-visible:ring-0 focus-visible:ring-offset-0"
+            )}
           />
           {text.trim() || attachments.length > 0 ? (
-            <Button type="button" size="icon" onClick={handleSend}>
-              <SendIcon />
+            <Button
+              type="button"
+              size="icon"
+              className="h-10 w-10 shrink-0 rounded-full bg-primary text-primary-foreground hover:bg-primary/90"
+              onClick={handleSend}
+            >
+              <SendIcon className="h-5 w-5" />
               <span className="sr-only">Enviar</span>
             </Button>
           ) : (
-            <Button type="button" variant="outline" size="icon" onClick={handleToggleRecording}>
-              <MicIcon />
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="h-10 w-10 shrink-0 rounded-full"
+              onClick={handleToggleRecording}
+            >
+              <MicIcon className="h-5 w-5" />
               <span className="sr-only">Gravar mensagem de voz</span>
             </Button>
           )}
