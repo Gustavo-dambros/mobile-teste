@@ -3,9 +3,15 @@
   "compilerOptions": {
     "strict": true,
     "paths": {
-      "@/*": [
-        "./*"
-      ]
+      "@/*": ["./*"],
+      "@unipar/types": ["../packages/shared/types/src"],
+      "@unipar/types/*": ["../packages/shared/types/src/*"],
+      "@unipar/utils": ["../packages/shared/utils/src"],
+      "@unipar/utils/*": ["../packages/shared/utils/src/*"],
+      "@unipar/constants": ["../packages/shared/constants/src"],
+      "@unipar/constants/*": ["../packages/shared/constants/src/*"],
+      "@unipar/api": ["../packages/api/src"],
+      "@unipar/api/*": ["../packages/api/src/*"]
     }
   },
   "include": [
