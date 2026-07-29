@@ -7,7 +7,7 @@ import { assertActiveProfile } from "@/lib/supabase/active-profile"
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const { id } = await params
     const admin = createAdminClient()
 

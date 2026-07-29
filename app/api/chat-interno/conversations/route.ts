@@ -4,9 +4,9 @@ import { z } from "zod"
 import { getConversationMembers, mapConversation, requireUser } from "@/lib/chat-interno/server"
 import { createAdminClient } from "@/lib/supabase/admin"
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const admin = createAdminClient()
 
     const { data: memberRows, error: memberError } = await admin
@@ -56,7 +56,7 @@ const bodySchema = z.discriminatedUnion("kind", [
 
 export async function POST(request: Request) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const body = bodySchema.parse(await request.json())
     const admin = createAdminClient()
 

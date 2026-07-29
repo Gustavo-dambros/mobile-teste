@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 import { z } from "zod"
 
-import { getCurrentUser } from "@/lib/session-server"
+import { getCurrentUserFromRequest } from "@/lib/session-server"
 import { createAdminClient } from "@/lib/supabase/admin"
 
 const bodySchema = z.object({
@@ -14,7 +14,7 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const user = await getCurrentUser()
+    const user = await getCurrentUserFromRequest(request)
     if (!user) {
       return NextResponse.json({ error: "Não autenticado" }, { status: 401 })
     }

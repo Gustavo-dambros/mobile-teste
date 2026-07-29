@@ -10,18 +10,13 @@ import {
 } from "@/lib/access-request/otp"
 import { sendWhatsAppText, toWhatsAppNumber } from "@/lib/evolution/client"
 import { createAdminClient } from "@/lib/supabase/admin"
-
-const bodySchema = z.object({
-  email: z.string().email(),
-  sector: z.string().min(1),
-  phone: z.string().min(8),
-})
+import { sendRecoveryOtpSchema } from "@unipar/validation"
 
 const GENERIC_ERROR = "Dados não conferem. Verifique e-mail, setor e telefone informados."
 
 export async function POST(request: Request) {
   try {
-    const body = bodySchema.parse(await request.json())
+    const body = sendRecoveryOtpSchema.parse(await request.json())
     const phoneDigits = body.phone.replace(/\D/g, "")
 
     const admin = createAdminClient()

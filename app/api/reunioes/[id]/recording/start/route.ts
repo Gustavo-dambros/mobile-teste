@@ -16,9 +16,9 @@ import { createAdminClient } from "@/lib/supabase/admin"
 /** Host starts LiveKit Egress room-composite recording — the returned egressId is the
  * only cross-reference between LiveKit and our meeting_recordings row; the actual file
  * only becomes downloadable once the egress_ended webhook fires (see egress-webhook route). */
-export async function POST(_request: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const { id } = await params
     const meeting = await requireHostMeeting(id, user)
     const admin = createAdminClient()

@@ -1,25 +1,14 @@
 import { NextResponse } from "next/server"
 import { z } from "zod"
 
-import { userRoleSchema } from "@/components/administracao/types"
 import { AdminAuthError, createAuthUserAndProfile, requireAdmin } from "@/lib/administracao/server-actions"
 import { createAdminClient } from "@/lib/supabase/admin"
-
-const bodySchema = z.object({
-  requestId: z.string(),
-  name: z.string().min(1),
-  email: z.string().email(),
-  phone: z.string().min(1),
-  sector: z.string().min(1),
-  cpf: z.string().min(1),
-  role: userRoleSchema,
-  isSectorLeader: z.boolean(),
-})
+import { createAdminUserSchema } from "@unipar/validation"
 
 export async function POST(request: Request) {
   try {
     const admin = await requireAdmin()
-    const body = bodySchema.parse(await request.json())
+    const body = createAdminUserSchema.parse(await request.json())
 
     const { user, notified } = await createAuthUserAndProfile(body)
 

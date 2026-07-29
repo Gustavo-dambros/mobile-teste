@@ -10,21 +10,13 @@ import {
   requireUser,
 } from "@/lib/tickets/server"
 import { createAdminClient } from "@/lib/supabase/admin"
-
-const bodySchema = z.object({
-  title: z.string().min(1).optional(),
-  description: z.string().optional(),
-  sector: z
-    .enum(["SP-Suporte Técnico", "RH-Recursos Humanos", "ADM-Administração", "SEP-Serviços Escola Psicologia"])
-    .optional(),
-  assigneeId: z.string().uuid().nullable().optional(),
-})
+import { updateTicketSchema } from "@unipar/validation"
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const { id } = await params
-    const body = bodySchema.parse(await request.json())
+    const body = updateTicketSchema.parse(await request.json())
     const admin = createAdminClient()
 
     if (!(await canAccessTicket(user, id))) {

@@ -3,10 +3,11 @@ import { z } from "zod"
 
 import { MESSAGE_SELECT, TICKET_SELECT, mapMessageRow, mapTicketRow, requireUser } from "@/lib/tickets/server"
 import { createAdminClient } from "@/lib/supabase/admin"
+import { createTicketSchema } from "@unipar/validation"
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const admin = createAdminClient()
 
     let query = admin
@@ -33,27 +34,10 @@ export async function GET() {
   }
 }
 
-const attachmentSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  size: z.number(),
-  kind: z.enum(["image", "video", "document"]),
-  mimeType: z.string(),
-  url: z.string(),
-})
-
-const bodySchema = z.object({
-  title: z.string().min(1),
-  description: z.string().default(""),
-  priority: z.enum(["Alta", "Média", "Baixa"]),
-  sector: z.enum(["SP-Suporte Técnico", "RH-Recursos Humanos", "ADM-Administração", "SEP-Serviços Escola Psicologia"]),
-  attachments: z.array(attachmentSchema).default([]),
-})
-
 export async function POST(request: Request) {
   try {
-    const user = await requireUser()
-    const body = bodySchema.parse(await request.json())
+    const user = await requireUser(request)
+    const body = createTicketSchema.parse(await request.json())
     const admin = createAdminClient()
 
     const { data: ticket, error } = await admin

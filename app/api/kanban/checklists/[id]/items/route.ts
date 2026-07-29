@@ -13,7 +13,7 @@ const bodySchema = z.object({ title: z.string().min(1) })
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const { id } = await params
     const { title } = bodySchema.parse(await request.json())
 

@@ -8,9 +8,9 @@ const ACTIVITY_LIMIT = 50
 /** Host-only feed of meeting_admin_actions — every host action (mute, remove, lock
  * mic/camera, recording, link rotation...) is already logged there; this is the first
  * place that actually reads it back. */
-export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const { id } = await params
     await requireHostMeeting(id, user)
 

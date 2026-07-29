@@ -20,7 +20,7 @@ export async function POST(
   { params }: { params: Promise<{ id: string; participantId: string }> }
 ) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const { id, participantId } = await params
     await requireHostMeeting(id, user)
 

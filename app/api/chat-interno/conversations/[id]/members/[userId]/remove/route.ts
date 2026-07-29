@@ -8,7 +8,7 @@ export async function POST(
   { params }: { params: Promise<{ id: string; userId: string }> }
 ) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const { id, userId } = await params
     const admin = createAdminClient()
 

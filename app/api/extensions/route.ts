@@ -2,12 +2,12 @@ import { NextResponse } from "next/server"
 import { z } from "zod"
 
 import { EXTENSION_SELECT, mapExtensionRow } from "@/lib/extensions/server"
-import { getCurrentUser } from "@/lib/session-server"
+import { getCurrentUserFromRequest } from "@/lib/session-server"
 import { createAdminClient } from "@/lib/supabase/admin"
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const user = await getCurrentUser()
+    const user = await getCurrentUserFromRequest(request)
     if (!user) {
       return NextResponse.json({ error: "Não autenticado" }, { status: 401 })
     }
@@ -37,7 +37,7 @@ const bodySchema = z.object({
 
 export async function POST(request: Request) {
   try {
-    const user = await getCurrentUser()
+    const user = await getCurrentUserFromRequest(request)
     if (!user) {
       return NextResponse.json({ error: "Não autenticado" }, { status: 401 })
     }

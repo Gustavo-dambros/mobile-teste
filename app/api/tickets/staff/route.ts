@@ -5,7 +5,7 @@ import { createAdminClient } from "@/lib/supabase/admin"
 
 export async function GET(request: Request) {
   try {
-    await requireUser()
+    await requireUser(request)
     const sector = new URL(request.url).searchParams.get("sector")
     if (!sector) return NextResponse.json({ error: "Informe o setor" }, { status: 400 })
 

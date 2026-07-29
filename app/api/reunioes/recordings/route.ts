@@ -7,9 +7,9 @@ import type { MeetingRecording } from "@/lib/reunioes/types"
 
 /** Recordings from meetings the current user hosted, attended, or was invited to —
  * expired ones are excluded (the 24h-cleanup job flips them to status='expired'). */
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const meetingIds = await listMeetingIdsForUser(user.id)
     if (meetingIds.length === 0) return NextResponse.json({ recordings: [] })
 

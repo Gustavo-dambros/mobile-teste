@@ -3,7 +3,7 @@ import { z } from "zod"
 
 import { canCommentOnTask } from "@/lib/atividades-setor/permissions"
 import { CHECKLIST_SELECT, mapChecklistRow, requireUser } from "@/lib/atividades-setor/server"
-import type { SessionUser } from "@/lib/session"
+import type { SessionUser } from "@unipar/types"
 import { createAdminClient } from "@/lib/supabase/admin"
 
 async function requireChecklistAccess(admin: ReturnType<typeof createAdminClient>, user: SessionUser, taskId: string) {
@@ -36,7 +36,7 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string; itemId: string }> }
 ) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const { id, itemId } = await params
     const body = patchSchema.parse(await request.json())
     const admin = createAdminClient()
@@ -84,7 +84,7 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string; itemId: string }> }
 ) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const { id, itemId } = await params
     const admin = createAdminClient()
 

@@ -8,7 +8,7 @@ const bodySchema = z.object({ completed: z.boolean() })
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const { id } = await params
     const { completed } = bodySchema.parse(await request.json())
     const admin = createAdminClient()

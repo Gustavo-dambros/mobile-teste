@@ -3,9 +3,9 @@ import { NextResponse } from "next/server"
 import { requireUser } from "@/lib/tickets/server"
 import { createAdminClient } from "@/lib/supabase/admin"
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const admin = createAdminClient()
 
     const { data, error } = await admin.rpc("ticket_unread_counts", { p_user_id: user.id })

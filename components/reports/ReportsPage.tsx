@@ -11,7 +11,7 @@ import {
 } from "lucide-react"
 
 import { pageHeader } from "@/lib/motion"
-import { isAdmin } from "@/lib/session"
+import { isAdmin } from "@unipar/types"
 import { useCurrentUser } from "@/lib/current-user/context"
 import { useTickets } from "@/lib/tickets/store"
 import type { DirectoryMember } from "@/lib/team/directory"

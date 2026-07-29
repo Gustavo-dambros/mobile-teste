@@ -10,14 +10,13 @@ import {
   requireUser,
 } from "@/lib/tickets/server"
 import { createAdminClient } from "@/lib/supabase/admin"
-
-const bodySchema = z.object({ reason: z.string().min(1) })
+import { reopenTicketSchema } from "@unipar/validation"
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const { id } = await params
-    const { reason } = bodySchema.parse(await request.json())
+    const { reason } = reopenTicketSchema.parse(await request.json())
     const admin = createAdminClient()
 
     if (!(await canAccessTicket(user, id))) {

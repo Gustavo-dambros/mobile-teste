@@ -20,9 +20,9 @@ function reminderLabel(offsetMinutes: number) {
  * whenever *their own* client runs this sync — never generated on someone
  * else's behalf.
  */
-export async function POST() {
+export async function POST(request: Request) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const admin = createAdminClient()
     const nowMs = Date.now()
 

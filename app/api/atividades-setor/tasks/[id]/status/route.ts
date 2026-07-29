@@ -9,7 +9,7 @@ const bodySchema = z.object({ status: z.enum(["pendente", "em_andamento", "concl
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const { id } = await params
     const { status } = bodySchema.parse(await request.json())
     const admin = createAdminClient()

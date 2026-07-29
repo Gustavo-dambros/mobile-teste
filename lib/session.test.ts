@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 
-import { isAdmin, type SessionUser } from "@/lib/session"
+import { isAdmin, type SessionUser } from "@unipar/types"
 
 function user(overrides: Partial<SessionUser> = {}): SessionUser {
   return {

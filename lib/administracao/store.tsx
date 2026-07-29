@@ -11,7 +11,7 @@ import type {
 import { cpfDigits } from "@/lib/administracao/format"
 import { playAccessRequestSound } from "@/lib/administracao/notification-sound"
 import { notifyBrowser } from "@/lib/notifications/browser-notifications"
-import { isAdmin } from "@/lib/session"
+import { isAdmin } from "@unipar/types"
 import { createClient } from "@/lib/supabase/client"
 import { useCurrentUser } from "@/lib/current-user/context"
 

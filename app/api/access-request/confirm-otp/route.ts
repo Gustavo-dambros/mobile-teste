@@ -3,15 +3,11 @@ import { z } from "zod"
 
 import { hashOtpCode, OTP_MAX_ATTEMPTS } from "@/lib/access-request/otp"
 import { createAdminClient } from "@/lib/supabase/admin"
-
-const bodySchema = z.object({
-  otpId: z.string(),
-  code: z.string().length(6),
-})
+import { confirmAccessRequestOtpSchema } from "@unipar/validation"
 
 export async function POST(request: Request) {
   try {
-    const { otpId, code } = bodySchema.parse(await request.json())
+    const { otpId, code } = confirmAccessRequestOtpSchema.parse(await request.json())
     const admin = createAdminClient()
 
     const { data: otp, error } = await admin

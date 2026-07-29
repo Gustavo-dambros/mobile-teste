@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import type { SessionUser } from "@/lib/session"
+import type { SessionUser } from "@unipar/types"
 
 const mockSingle = vi.fn()
 

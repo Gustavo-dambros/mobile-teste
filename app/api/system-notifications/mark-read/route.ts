@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server"
 
-import { getCurrentUser } from "@/lib/session-server"
+import { getCurrentUserFromRequest } from "@/lib/session-server"
 import { createAdminClient } from "@/lib/supabase/admin"
 
-export async function POST() {
+export async function POST(request: Request) {
   try {
-    const user = await getCurrentUser()
+    const user = await getCurrentUserFromRequest(request)
     if (!user) {
       return NextResponse.json({ error: "Não autenticado" }, { status: 401 })
     }

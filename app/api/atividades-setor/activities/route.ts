@@ -32,9 +32,9 @@ const bodySchema = z.object({
   reminders: z.array(z.object({ offsetMinutes: z.number() })).default([]),
 })
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const admin = createAdminClient()
 
     let query = admin.from("activities").select(ACTIVITY_SELECT)
@@ -69,7 +69,7 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const input = bodySchema.parse(await request.json())
     if (!isSystemAdmin(user) && input.sector !== user.sector) {
       return NextResponse.json(

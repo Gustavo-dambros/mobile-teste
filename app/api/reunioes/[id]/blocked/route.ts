@@ -5,9 +5,9 @@ import { createAdminClient } from "@/lib/supabase/admin"
 
 /** Host-only list of who's currently blocked from this meeting — the "Bloqueados" section
  * in ParticipantsPanel, so a removal can be explicitly reversed (see /unblock). */
-export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const { id } = await params
     await requireHostMeeting(id, user)
 

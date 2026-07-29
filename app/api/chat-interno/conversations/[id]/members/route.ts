@@ -9,7 +9,7 @@ const bodySchema = z.object({ memberIds: z.array(z.string().uuid()).min(1) })
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const { id } = await params
     const body = bodySchema.parse(await request.json())
     const admin = createAdminClient()

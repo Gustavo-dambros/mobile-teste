@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation"
 import { motion, useReducedMotion } from "motion/react"
 
 import { sidebarContainer, sidebarItem, hoverNudge, tapScale, microTap } from "@/lib/motion"
-import { isAdmin } from "@/lib/session"
+import { isAdmin } from "@unipar/types"
 import { useCurrentUser } from "@/lib/current-user/context"
 import { useAdministracao } from "@/lib/administracao/store"
 import { NavMain } from "@/components/nav-main"

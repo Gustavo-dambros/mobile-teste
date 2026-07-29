@@ -7,7 +7,7 @@ import { createAdminClient } from "@/lib/supabase/admin"
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const { id } = await params
 
     if (!(await canAccessTask(user, id))) {
@@ -39,7 +39,7 @@ const bodySchema = z.object({ text: z.string().min(1) })
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const { id } = await params
     const { text } = bodySchema.parse(await request.json())
     const admin = createAdminClient()

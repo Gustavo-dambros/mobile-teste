@@ -5,9 +5,9 @@ import { createAdminClient } from "@/lib/supabase/admin"
 
 /** Marks a single invite notification read without changing the invitee's accept/decline
  * status — used by "Ver detalhes" (they saw it, but haven't necessarily responded). */
-export async function POST(_request: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const { id } = await params
     const admin = createAdminClient()
 

@@ -12,7 +12,7 @@ import {
   VideoIcon,
 } from "lucide-react"
 
-import type { SessionRole } from "@/lib/session"
+import type { SessionRole } from "@unipar/types"
 
 export const presenceStatusSchema = z.enum(["ONLINE", "BUSY", "AWAY", "OFFLINE"])
 export type PresenceStatus = z.infer<typeof presenceStatusSchema>

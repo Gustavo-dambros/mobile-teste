@@ -13,7 +13,7 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string; messageId: string }> }
 ) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const { id, messageId } = await params
     const { text } = bodySchema.parse(await request.json())
     const admin = createAdminClient()

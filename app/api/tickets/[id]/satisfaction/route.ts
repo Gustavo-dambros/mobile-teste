@@ -3,17 +3,13 @@ import { z } from "zod"
 
 import { TICKET_SELECT, mapTicketRow, requireUser } from "@/lib/tickets/server"
 import { createAdminClient } from "@/lib/supabase/admin"
-
-const bodySchema = z.object({
-  rating: z.number().int().min(1).max(5),
-  comment: z.string().trim().max(2000).optional(),
-})
+import { satisfactionSchema } from "@unipar/validation"
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const { id } = await params
-    const { rating, comment } = bodySchema.parse(await request.json())
+    const { rating, comment } = satisfactionSchema.parse(await request.json())
 
     const admin = createAdminClient()
     const { data: ticket } = await admin

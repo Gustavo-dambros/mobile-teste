@@ -3,6 +3,7 @@ import { z } from "zod"
 
 import { MESSAGE_SELECT, applySeenStatus, canAccessTicket, mapMessageRow, requireUser } from "@/lib/tickets/server"
 import { createAdminClient } from "@/lib/supabase/admin"
+import { createTicketMessageSchema } from "@unipar/validation"
 
 // Soft cap so a very long-lived ticket doesn't re-download its entire history
 // on every 12s poll/realtime ping — the client already only *renders* the
@@ -11,7 +12,7 @@ const MAX_MESSAGES = 300
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const { id } = await params
 
     if (!(await canAccessTicket(user, id))) {
@@ -48,30 +49,11 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
   }
 }
 
-const attachmentSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  size: z.number(),
-  kind: z.enum(["image", "video", "document"]),
-  mimeType: z.string(),
-  url: z.string(),
-})
-
-const bodySchema = z
-  .object({
-    text: z.string().default(""),
-    replyToId: z.string().uuid().optional(),
-    attachments: z.array(attachmentSchema).default([]),
-  })
-  .refine((data) => data.text.trim().length > 0 || data.attachments.length > 0, {
-    message: "Envie um texto ou pelo menos um anexo",
-  })
-
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const { id } = await params
-    const body = bodySchema.parse(await request.json())
+    const body = createTicketMessageSchema.parse(await request.json())
 
     if (!(await canAccessTicket(user, id))) {
       return NextResponse.json({ error: "Chamado não encontrado" }, { status: 404 })

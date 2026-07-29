@@ -9,9 +9,9 @@ import {
 } from "@/lib/reunioes/server"
 import { createAdminClient } from "@/lib/supabase/admin"
 
-export async function POST(_request: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const { id } = await params
     const admin = createAdminClient()
 

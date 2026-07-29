@@ -5,9 +5,9 @@ import { createAdminClient } from "@/lib/supabase/admin"
 
 /** Unread meeting invites for the current user — backs the sidebar badge and the central
  * MeetingInviteModal, the direct structural analog of announcement_notifications. */
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const admin = createAdminClient()
     const { data, error } = await admin
       .from("meeting_invite_notifications")

@@ -12,7 +12,7 @@ const bodySchema = z.object({ userIds: z.array(z.string().uuid()).min(1) })
  * pick it up on the next poll. */
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const { id } = await params
     const meeting = await requireHostMeeting(id, user)
     const { userIds } = bodySchema.parse(await request.json())

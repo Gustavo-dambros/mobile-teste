@@ -25,7 +25,7 @@ function sanitizeFileName(name: string) {
 
 export async function POST(request: Request) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const formData = await request.formData()
     const files = formData.getAll("files").filter((f): f is File => f instanceof File)
     const ids = formData.getAll("ids").map(String)

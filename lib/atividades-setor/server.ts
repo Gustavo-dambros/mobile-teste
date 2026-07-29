@@ -10,8 +10,8 @@ import type {
   Task,
   TaskComment,
 } from "@/components/atividades-setor/types"
-import type { SessionUser } from "@/lib/session"
-import { getCurrentUser } from "@/lib/session-server"
+import type { SessionUser } from "@unipar/types"
+import { getCurrentUser, getCurrentUserFromRequest } from "@/lib/session-server"
 import { canViewEvent, canViewTask } from "@/lib/atividades-setor/permissions"
 import { createAdminClient } from "@/lib/supabase/admin"
 
@@ -22,8 +22,10 @@ export class ActivitiesAuthError extends Error {
   }
 }
 
-export async function requireUser(): Promise<SessionUser> {
-  const user = await getCurrentUser()
+export async function requireUser(request?: Request): Promise<SessionUser> {
+  const user = request
+    ? await getCurrentUserFromRequest(request)
+    : await getCurrentUser()
   if (!user) throw new ActivitiesAuthError()
   return user
 }

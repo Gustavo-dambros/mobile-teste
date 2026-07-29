@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server"
 
-import { getCurrentUser } from "@/lib/session-server"
+import { getCurrentUserFromRequest } from "@/lib/session-server"
 import { createAdminClient } from "@/lib/supabase/admin"
 import { ACTIVITY_LABEL, computePresenceLabel } from "@/lib/team/presence-labels"
 
-export async function GET() {
-  const user = await getCurrentUser()
+export async function GET(request: Request) {
+  const user = await getCurrentUserFromRequest(request)
   if (!user) {
     return NextResponse.json({ error: "Não autenticado" }, { status: 401 })
   }

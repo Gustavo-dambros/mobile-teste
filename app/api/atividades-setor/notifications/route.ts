@@ -5,9 +5,9 @@ import { createAdminClient } from "@/lib/supabase/admin"
 
 const MAX_NOTIFICATIONS = 200
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const admin = createAdminClient()
 
     const { data, error } = await admin

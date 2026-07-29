@@ -8,9 +8,9 @@ const SIGNED_URL_TTL_SECONDS = 10 * 60
 /** Mints a short-lived signed URL for a recording — never a permanent public link.
  * Access is checked against the meetings the requester actually hosted/attended/was
  * invited to, same rule GET /api/reunioes/recordings uses for the list itself. */
-export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const { id } = await params
     const admin = createAdminClient()
 

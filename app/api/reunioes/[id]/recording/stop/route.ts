@@ -13,9 +13,9 @@ import { createAdminClient } from "@/lib/supabase/admin"
 
 /** Requests egress to stop — the row flips to 'processing' here and to 'ready' (or
  * 'failed') once the egress_ended webhook actually delivers the finished file. */
-export async function POST(_request: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const { id } = await params
     const meeting = await requireHostMeeting(id, user)
     const admin = createAdminClient()

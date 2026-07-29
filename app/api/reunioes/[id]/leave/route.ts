@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 import { z } from "zod"
 
-import { getCurrentUser } from "@/lib/session-server"
+import { getCurrentUserFromRequest } from "@/lib/session-server"
 import { createAdminClient } from "@/lib/supabase/admin"
 
 const bodySchema = z.object({ participantId: z.string().uuid() })
@@ -26,7 +26,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     // do have a session, so for them we actually verify identity: only the participant
     // themselves or the host can force a "leave".
     if (participant.kind === "registered") {
-      const user = await getCurrentUser()
+      const user = await getCurrentUserFromRequest(request)
       const { data: meeting } = await admin.from("meetings").select("host_id").eq("id", id).maybeSingle()
       const isSelf = !!user && user.id === participant.user_id
       const isHost = !!user && !!meeting && user.id === meeting.host_id

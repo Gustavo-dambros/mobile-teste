@@ -6,7 +6,7 @@ import { createAdminClient } from "@/lib/supabase/admin"
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const { id } = await params
     if (!canRestoreTask(user)) {
       return NextResponse.json({ error: "Apenas administradores podem restaurar tarefas" }, { status: 403 })

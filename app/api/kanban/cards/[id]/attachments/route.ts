@@ -5,7 +5,7 @@ import { createAdminClient } from "@/lib/supabase/admin"
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const { id } = await params
     const owner = await getCardOwner(id)
     if (!owner || owner.ownerId !== user.id) {

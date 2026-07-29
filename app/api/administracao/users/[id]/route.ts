@@ -1,25 +1,15 @@
 import { NextResponse } from "next/server"
 import { z } from "zod"
 
-import { userRoleSchema, userStatusSchema } from "@/components/administracao/types"
 import { AdminAuthError, requireAdmin } from "@/lib/administracao/server-actions"
 import { createAdminClient } from "@/lib/supabase/admin"
-
-const bodySchema = z.object({
-  name: z.string().min(1).optional(),
-  email: z.string().email().optional(),
-  sector: z.string().min(1).optional(),
-  phone: z.string().min(1).optional(),
-  role: userRoleSchema.optional(),
-  status: userStatusSchema.optional(),
-  isSectorLeader: z.boolean().optional(),
-})
+import { updateAdminUserSchema } from "@unipar/validation"
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     await requireAdmin()
     const { id } = await params
-    const changes = bodySchema.parse(await request.json())
+    const changes = updateAdminUserSchema.parse(await request.json())
 
     const admin = createAdminClient()
 

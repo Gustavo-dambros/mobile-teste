@@ -1,7 +1,7 @@
 import "server-only"
 
-import type { SessionUser } from "@/lib/session"
-import { getCurrentUser } from "@/lib/session-server"
+import type { SessionUser } from "@unipar/types"
+import { getCurrentUser, getCurrentUserFromRequest } from "@/lib/session-server"
 import { createAdminClient } from "@/lib/supabase/admin"
 import type {
   KanbanActivityAction,
@@ -23,8 +23,10 @@ export class KanbanAuthError extends Error {
   }
 }
 
-export async function requireUser(): Promise<SessionUser> {
-  const user = await getCurrentUser()
+export async function requireUser(request?: Request): Promise<SessionUser> {
+  const user = request
+    ? await getCurrentUserFromRequest(request)
+    : await getCurrentUser()
   if (!user) throw new KanbanAuthError()
   return user
 }

@@ -3,7 +3,7 @@
 import { motion, useReducedMotion } from "motion/react"
 
 import { adminPageReveal } from "@/lib/motion"
-import { isAdmin } from "@/lib/session"
+import { isAdmin } from "@unipar/types"
 import { useCurrentUser } from "@/lib/current-user/context"
 import { useAdministracao } from "@/lib/administracao/store"
 import { AccessDeniedState } from "@/components/administracao/AccessDeniedState"

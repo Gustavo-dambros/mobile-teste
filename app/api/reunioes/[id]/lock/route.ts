@@ -10,7 +10,7 @@ const bodySchema = z.object({ locked: z.boolean() })
  * anyone already inside (participants) is unaffected. */
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const { id } = await params
     const { locked } = bodySchema.parse(await request.json())
     await requireHostMeeting(id, user)

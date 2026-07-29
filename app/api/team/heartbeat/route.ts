@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 
-import { getCurrentUser } from "@/lib/session-server"
+import { getCurrentUserFromRequest } from "@/lib/session-server"
 import { createAdminClient } from "@/lib/supabase/admin"
 
 /**
@@ -11,8 +11,8 @@ import { createAdminClient } from "@/lib/supabase/admin"
  * lib/team/presence-labels.ts) and they show Offline, regardless of whatever
  * presence_status they last picked manually.
  */
-export async function POST() {
-  const user = await getCurrentUser()
+export async function POST(request: Request) {
+  const user = await getCurrentUserFromRequest(request)
   if (!user) {
     return NextResponse.json({ error: "Não autenticado" }, { status: 401 })
   }

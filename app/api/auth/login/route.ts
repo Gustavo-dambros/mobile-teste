@@ -2,13 +2,14 @@ import { NextResponse } from "next/server"
 
 import { createAdminClient } from "@/lib/supabase/admin"
 import { createClient } from "@/lib/supabase/server"
+import { loginSchema } from "@unipar/validation"
 
 export async function POST(request: Request) {
-  const { email, password } = await request.json()
-
-  if (typeof email !== "string" || typeof password !== "string" || !email || !password) {
+  const parsed = loginSchema.safeParse(await request.json())
+  if (!parsed.success) {
     return NextResponse.json({ ok: false, error: "Informe e-mail e senha" }, { status: 400 })
   }
+  const { email, password } = parsed.data
 
   const admin = createAdminClient()
   const { data: profile } = await admin

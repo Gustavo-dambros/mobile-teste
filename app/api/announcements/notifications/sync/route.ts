@@ -4,9 +4,9 @@ import { mapNotificationRow, requireUser } from "@/lib/announcements/server"
 import { computeApplicableTriggers } from "@/lib/announcements/schedule"
 import { createAdminClient } from "@/lib/supabase/admin"
 
-export async function POST() {
+export async function POST(request: Request) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const admin = createAdminClient()
 
     const { data: announcements, error } = await admin

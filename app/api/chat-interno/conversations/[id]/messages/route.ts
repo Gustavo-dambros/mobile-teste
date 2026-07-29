@@ -14,7 +14,7 @@ const MAX_MESSAGES = 300
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const { id } = await params
 
     if (!(await isActiveMember(user.id, id))) {
@@ -74,7 +74,7 @@ const bodySchema = z
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const { id } = await params
     const body = bodySchema.parse(await request.json())
 

@@ -2,8 +2,8 @@ import "server-only"
 
 import { createHash } from "crypto"
 
-import type { SessionUser } from "@/lib/session"
-import { getCurrentUser } from "@/lib/session-server"
+import type { SessionUser } from "@unipar/types"
+import { getCurrentUser, getCurrentUserFromRequest } from "@/lib/session-server"
 import { stopActiveRecordingForMeeting } from "@/lib/reunioes/recordings"
 import { createAdminClient } from "@/lib/supabase/admin"
 import type {
@@ -31,8 +31,10 @@ export class ReunioesAuthError extends Error {
   }
 }
 
-export async function requireUser(): Promise<SessionUser> {
-  const user = await getCurrentUser()
+export async function requireUser(request?: Request): Promise<SessionUser> {
+  const user = request
+    ? await getCurrentUserFromRequest(request)
+    : await getCurrentUser()
   if (!user) throw new ReunioesAuthError()
   return user
 }

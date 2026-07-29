@@ -4,9 +4,9 @@ import { z } from "zod"
 import { LABEL_SELECT, mapLabelRow, requireUser } from "@/lib/kanban/server"
 import { createAdminClient } from "@/lib/supabase/admin"
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const admin = createAdminClient()
 
     const { data, error } = await admin
@@ -32,7 +32,7 @@ const bodySchema = z.object({ name: z.string().min(1), color: z.string().min(1) 
 
 export async function POST(request: Request) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const { name, color } = bodySchema.parse(await request.json())
     const admin = createAdminClient()
 

@@ -12,8 +12,7 @@ import {
 import { sendEmail } from "@/lib/email/client"
 import { otpEmailHtml } from "@/lib/email/templates"
 import { createAdminClient } from "@/lib/supabase/admin"
-
-const ACCESS_REQUEST_EMAIL_DOMAIN = "@unipar.br"
+import { sendAccessRequestOtpSchema } from "@unipar/validation"
 
 // Desativado temporariamente: o Resend está em modo sandbox (remetente
 // onboarding@resend.dev) e só entrega e-mails para a conta dona do Resend,
@@ -21,24 +20,9 @@ const ACCESS_REQUEST_EMAIL_DOMAIN = "@unipar.br"
 // assim que um domínio/remetente @unipar.br for verificado no Resend.
 const OTP_VERIFICATION_ENABLED = false
 
-const bodySchema = z.object({
-  name: z.string().min(1),
-  email: z
-    .string()
-    .trim()
-    .toLowerCase()
-    .email()
-    .refine((v) => v.endsWith(ACCESS_REQUEST_EMAIL_DOMAIN), {
-      message: `Use um e-mail terminado em ${ACCESS_REQUEST_EMAIL_DOMAIN}`,
-    }),
-  phone: z.string().min(8),
-  sector: z.string().min(1),
-  cpf: z.string().min(11),
-})
-
 export async function POST(request: Request) {
   try {
-    const body = bodySchema.parse(await request.json())
+    const body = sendAccessRequestOtpSchema.parse(await request.json())
     const cpfOnlyDigits = cpfDigits(body.cpf)
 
     const admin = createAdminClient()

@@ -9,9 +9,9 @@ import { createAdminClient } from "@/lib/supabase/admin"
 // realistic real-world count.
 const MAX_TASKS = 2000
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const admin = createAdminClient()
 
     let query = admin.from("activity_tasks").select(TASK_SELECT)

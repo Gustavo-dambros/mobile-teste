@@ -9,7 +9,7 @@ const bodySchema = z.object({ callId: z.string().uuid() })
 
 export async function POST(request: Request) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
 
     const apiKey = process.env.LIVEKIT_API_KEY
     const apiSecret = process.env.LIVEKIT_API_SECRET

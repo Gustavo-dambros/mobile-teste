@@ -4,15 +4,11 @@ import { z } from "zod"
 import { hashOtpCode, OTP_MAX_ATTEMPTS } from "@/lib/access-request/otp"
 import { sendWhatsAppText, toWhatsAppNumber } from "@/lib/evolution/client"
 import { createAdminClient } from "@/lib/supabase/admin"
-
-const bodySchema = z.object({
-  otpId: z.string(),
-  code: z.string().length(6),
-})
+import { confirmRecoveryOtpSchema } from "@unipar/validation"
 
 export async function POST(request: Request) {
   try {
-    const { otpId, code } = bodySchema.parse(await request.json())
+    const { otpId, code } = confirmRecoveryOtpSchema.parse(await request.json())
     const admin = createAdminClient()
 
     const { data: otp, error } = await admin

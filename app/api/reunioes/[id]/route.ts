@@ -3,9 +3,9 @@ import { NextResponse } from "next/server"
 import { MEETING_SELECT, getFullMeeting, listMeetingIdsForUser, requireUser } from "@/lib/reunioes/server"
 import { createAdminClient } from "@/lib/supabase/admin"
 
-export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const { id } = await params
 
     // Being logged in isn't enough — only the host, an invitee, or someone who's ever

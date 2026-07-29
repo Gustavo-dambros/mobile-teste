@@ -1,6 +1,6 @@
 import "server-only"
 
-import type { SessionUser } from "@/lib/session"
+import type { SessionUser } from "@unipar/types"
 import { createAdminClient } from "@/lib/supabase/admin"
 import { OVERDUE_HOURS } from "@/lib/tickets/status-badge"
 

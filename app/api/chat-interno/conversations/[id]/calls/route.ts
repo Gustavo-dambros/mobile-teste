@@ -8,7 +8,7 @@ const bodySchema = z.object({ kind: z.enum(["audio", "video"]) })
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const { id } = await params
     const { kind } = bodySchema.parse(await request.json())
 

@@ -1,4 +1,4 @@
-import type { SessionUser } from "@/lib/session"
+import type { SessionUser } from "@unipar/types"
 
 /**
  * Pure, framework-agnostic permission rules — no React, no fetch, no

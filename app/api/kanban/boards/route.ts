@@ -23,9 +23,9 @@ import { createAdminClient } from "@/lib/supabase/admin"
 // over years of use.
 const MAX_CARDS = 2000
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const admin = createAdminClient()
 
     const { data: boardRows, error: boardsError } = await admin
@@ -80,7 +80,7 @@ const bodySchema = z.object({
 
 export async function POST(request: Request) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const body = bodySchema.parse(await request.json())
     const admin = createAdminClient()
 

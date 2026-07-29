@@ -12,7 +12,7 @@ const bodySchema = z
  * permanent block enforced server-side in join / livekit-token / invite-request. */
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const { id } = await params
     await requireHostMeeting(id, user)
     const { userId, email } = bodySchema.parse(await request.json())

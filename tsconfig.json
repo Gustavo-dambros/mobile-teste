@@ -27,7 +27,9 @@
       "@unipar/constants": ["./packages/shared/constants/src"],
       "@unipar/constants/*": ["./packages/shared/constants/src/*"],
       "@unipar/api": ["./packages/api/src"],
-      "@unipar/api/*": ["./packages/api/src/*"]
+      "@unipar/api/*": ["./packages/api/src/*"],
+      "@unipar/validation": ["./packages/shared/validation/src"],
+      "@unipar/validation/*": ["./packages/shared/validation/src/*"]
     }
   },
   "include": [

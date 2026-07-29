@@ -17,7 +17,7 @@ const bodySchema = z.object({ minutes: z.number().int().positive().max(240) })
  * already has one (duration set at creation/start); nothing to extend otherwise. */
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const { id } = await params
     const body = bodySchema.parse(await request.json())
     const meeting = await requireHostMeeting(id, user)

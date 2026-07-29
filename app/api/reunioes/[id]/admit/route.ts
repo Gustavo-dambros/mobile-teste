@@ -8,7 +8,7 @@ const bodySchema = z.object({ guestId: z.string().uuid() })
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const { id } = await params
     const { guestId } = bodySchema.parse(await request.json())
     const meeting = await requireHostMeeting(id, user)

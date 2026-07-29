@@ -2,7 +2,7 @@
 
 import * as React from "react"
 
-import type { SessionUser } from "@/lib/session"
+import type { SessionUser } from "@unipar/types"
 
 const CurrentUserContext = React.createContext<SessionUser | null | undefined>(undefined)
 

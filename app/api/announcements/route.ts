@@ -18,9 +18,9 @@ import { assertActiveProfile, InactiveProfileError } from "@/lib/supabase/active
 // well above any realistic real-world count.
 const MAX_ANNOUNCEMENTS = 500
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const admin = createAdminClient()
 
     const { data: rows, error } = await admin
@@ -101,7 +101,7 @@ const bodySchema = z.object({
 
 export async function POST(request: Request) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const body = bodySchema.parse(await request.json())
     const admin = createAdminClient()
 

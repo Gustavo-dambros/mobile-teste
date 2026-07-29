@@ -40,9 +40,9 @@ function computeOccurrences(
   return dates
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const meetingIds = await listMeetingIdsForUser(user.id)
     if (meetingIds.length === 0) return NextResponse.json({ meetings: [] })
 
@@ -102,7 +102,7 @@ const bodySchema = z
 
 export async function POST(request: Request) {
   try {
-    const user = await requireUser()
+    const user = await requireUser(request)
     const body = bodySchema.parse(await request.json())
     const admin = createAdminClient()
 
