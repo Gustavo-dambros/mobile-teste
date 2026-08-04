@@ -26,9 +26,13 @@ export type { ApiError, ApiAuthError, ApiForbiddenError, ApiNotFoundError, ApiCo
  * ```
  */
 export async function apiFetch<T>(path: string, options?: RequestInit): Promise<T> {
+  return doFetch<T>(path, options, false)
+}
+
+async function doFetch<T>(path: string, options: RequestInit | undefined, isRetry: boolean): Promise<T> {
   const { baseURL, supabase } = getConfig()
 
-  // Extrai o token JWT da sessão atual para injetar no header
+  // Extrai o token JWT da sessão atual para injetar no header.
   let token: string | undefined
   try {
     const {
@@ -49,6 +53,18 @@ export async function apiFetch<T>(path: string, options?: RequestInit): Promise<
   mergedOptions.headers = headers
 
   const res = await fetch(`${baseURL}${path}`, mergedOptions)
+
+  // 401 → tenta UMA vez renovar a sessão e refazer a requisição.
+  // Se o refresh falhar (sessão expirada), o ApiAuthError propagado deve
+  // disparar o logout/redirecionamento para a tela de login no Mobile/Web.
+  if (res.status === 401 && !isRetry) {
+    const { data: refreshed } = await supabase.auth.refreshSession()
+    if (refreshed.session) {
+      return doFetch<T>(path, options, true)
+    }
+    const body = await res.json().catch(() => ({}))
+    throw createApiErrorFromStatus(body.error ?? "Sessão expirada", 401)
+  }
 
   if (!res.ok) {
     const body = await res.json().catch(() => ({}))
