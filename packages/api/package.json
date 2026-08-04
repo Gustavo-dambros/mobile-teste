@@ -8,8 +8,8 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
-    "@unipar/types": "workspace:*",
-    "@unipar/utils": "workspace:*",
+    "@unipar/types": "*",
+    "@unipar/utils": "*",
     "@supabase/supabase-js": "^2.110.2"
   }
 }

@@ -8,6 +8,6 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
-    "@unipar/types": "workspace:*"
+    "@unipar/types": "*"
   }
 }
