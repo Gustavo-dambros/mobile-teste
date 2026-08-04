@@ -35,7 +35,7 @@ export default function AppLayout() {
         options={{
           title: "Início",
           tabBarIcon: ({ color, size }) => (
-            <LayoutDashboard size={size} color={color} />
+            <LayoutDashboard size={size} color={color as string} />
           ),
         }}
       />
@@ -44,7 +44,7 @@ export default function AppLayout() {
         options={{
           title: "Atendimentos",
           tabBarIcon: ({ color, size }) => (
-            <Headphones size={size} color={color} />
+            <Headphones size={size} color={color as string} />
           ),
         }}
       />
@@ -62,7 +62,7 @@ export default function AppLayout() {
         options={{
           title: "Chat",
           tabBarIcon: ({ color, size }) => (
-            <MessageSquare size={size} color={color} />
+            <MessageSquare size={size} color={color as string} />
           ),
         }}
       />
@@ -71,7 +71,7 @@ export default function AppLayout() {
         options={{
           title: "Kanban",
           tabBarIcon: ({ color, size }) => (
-            <Columns3 size={size} color={color} />
+            <Columns3 size={size} color={color as string} />
           ),
         }}
       />

@@ -1,27 +1,14 @@
 import { View, Text, ScrollView, StyleSheet } from "react-native"
-import { useQuery } from "@tanstack/react-query"
-import { supabase } from "@/lib/supabase"
+import { useAuth } from "@/contexts/AuthContext"
 
 export default function DashboardScreen() {
-  const { data: profile } = useQuery({
-    queryKey: ["profile"],
-    queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) return null
-      const { data } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", user.id)
-        .single()
-      return data
-    },
-  })
+  const { user } = useAuth()
 
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.greeting}>
-          Olá, {profile?.name?.split(" ")[0] ?? "Usuário"}
+          Olá, {user?.user_metadata?.name?.split(" ")[0] ?? "Usuário"}
         </Text>
         <Text style={styles.subtitle}>Painel de Controle</Text>
       </View>
