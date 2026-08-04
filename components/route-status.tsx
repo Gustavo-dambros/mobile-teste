@@ -1,10 +1,16 @@
 import { DashboardShell } from "@/components/dashboard-shell"
 import { Skeleton } from "@/components/ui/skeleton"
 
-export function RouteLoading() {
+export function RouteLoading({ title }: { title?: string }) {
   return (
     <DashboardShell>
       <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+        {title && (
+          <div className="px-4 lg:px-6">
+            <Skeleton className="h-7 w-48" />
+            <span className="sr-only">{title}</span>
+          </div>
+        )}
         <div className="px-4 lg:px-6">
           <Skeleton className="h-72 w-full" />
         </div>

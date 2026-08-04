@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
+import { InstallPwaPrompt } from "@/components/install-pwa-prompt";
 
 const notoSans = Noto_Sans({
   variable: "--font-sans",
@@ -35,6 +36,7 @@ export default function RootLayout({
         >
           <TooltipProvider>{children}</TooltipProvider>
           <Toaster />
+          <InstallPwaPrompt />
         </ThemeProvider>
       </body>
     </html>
