@@ -1,5 +1,5 @@
 import { useFonts } from "expo-font"
-import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from "expo-router"
+import { DarkTheme, DefaultTheme, Stack, ThemeProvider, useRouter } from "expo-router"
 import * as SplashScreen from "expo-splash-screen"
 import { useEffect } from "react"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
@@ -7,7 +7,8 @@ import { StatusBar } from "expo-status-bar"
 import "react-native-reanimated"
 
 import { useColorScheme } from "@/components/useColorScheme"
-import { AuthProvider } from "@/contexts/AuthContext"
+import { AuthProvider, useAuth } from "@/contexts/AuthContext"
+import { ApiAuthError } from "@unipar/api"
 
 export { ErrorBoundary } from "expo-router"
 
@@ -17,12 +18,18 @@ export const unstable_settings = {
 
 SplashScreen.preventAutoHideAsync()
 
+// Refresh automático + logout/redirect central em 401: capturado via QueryCache.
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 10_000,
-      retry: 2,
+      retry: (failureCount, error) => {
+        // 401 já tentou refresh no apiFetch — não retentar a app level.
+        if (error instanceof ApiAuthError) return false
+        return failureCount < 2
+      },
     },
+    mutations: { retry: false },
   },
 })
 
@@ -54,6 +61,7 @@ function RootLayoutNav() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
+        <UnauthorizedGate />
         <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
           <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
           <Stack>
@@ -65,4 +73,23 @@ function RootLayoutNav() {
       </AuthProvider>
     </QueryClientProvider>
   )
+}
+
+// ponytail: único lugar que conecta ApiAuthError (vindo do apiFetch/lucide/@unipar/api)
+// ao redirect de login do Expo Router. Sem ele, cada hook teria que tratar 401.
+function UnauthorizedGate() {
+  const { signOut, session } = useAuth()
+  const router = useRouter()
+
+  useEffect(() => {
+    const cache = queryClient.getQueryCache()
+    return cache.subscribe((event) => {
+      const err = event.query.state.error
+      if (err instanceof ApiAuthError && session) {
+        signOut().finally(() => router.replace("/(auth)/login"))
+      }
+    })
+  }, [signOut, session, router])
+
+  return null
 }
