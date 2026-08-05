@@ -18,10 +18,12 @@ import {
   CameraIcon,
   BellIcon,
   LogOutIcon,
+  DownloadIcon,
 } from "lucide-react"
 
 import { listContainer, listItem } from "@/lib/motion"
 import { useProfile } from "@/lib/profile/store"
+import { usePwaInstall } from "@/components/pwa-install-context"
 import { revokeAvatarUrl, uploadAvatarFile } from "@/lib/profile/upload"
 import type { PresenceStatus, WorkActivityStatus } from "@/components/profile/types"
 import { ACCEPTED_AVATAR_TYPES, validateAvatarFile } from "@/lib/profile/upload"
@@ -69,6 +71,7 @@ export default function PerfilPage() {
   const router = useRouter()
   const reduced = useReducedMotion()
   const { profile, updateProfile } = useProfile()
+  const { canInstall, installing, install } = usePwaInstall()
 
   const [editing, setEditing] = React.useState(false)
   const [avatarDraft, setAvatarDraft] = React.useState<string | null | undefined>(undefined)
@@ -417,6 +420,16 @@ export default function PerfilPage() {
               >
                 <BellIcon className="h-5 w-5 text-muted-foreground" />
                 <span className="text-sm font-medium">Notificações</span>
+              </button>
+              <button
+                onClick={() => install()}
+                disabled={!canInstall || installing}
+                className="flex items-center gap-3 rounded-lg py-3 px-2 text-left hover:bg-muted transition-colors disabled:opacity-50"
+              >
+                <DownloadIcon className="h-5 w-5 text-muted-foreground" />
+                <span className="text-sm font-medium">
+                  {installing ? "Instalando..." : "Instalar app"}
+                </span>
               </button>
               <button
                 onClick={handleLogout}

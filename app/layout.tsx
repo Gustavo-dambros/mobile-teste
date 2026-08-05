@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
 import { InstallPwaPrompt } from "@/components/install-pwa-prompt";
+import { PwaInstallProvider } from "@/components/pwa-install-context";
 
 const notoSans = Noto_Sans({
   variable: "--font-sans",
@@ -34,9 +35,11 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <TooltipProvider>{children}</TooltipProvider>
-          <Toaster />
-          <InstallPwaPrompt />
+          <PwaInstallProvider>
+            <TooltipProvider>{children}</TooltipProvider>
+            <Toaster />
+            <InstallPwaPrompt />
+          </PwaInstallProvider>
         </ThemeProvider>
       </body>
     </html>
