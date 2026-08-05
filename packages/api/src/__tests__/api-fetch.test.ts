@@ -1,4 +1,4 @@
-import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import type { SupabaseClient } from "@supabase/supabase-js"
 
@@ -7,6 +7,7 @@ import type { SupabaseClient } from "@supabase/supabase-js"
 // ---------------------------------------------------------------------------
 
 const mockGetSession = vi.fn()
+const mockRefreshSession = vi.fn()
 const mockGetConfig = vi.fn()
 
 vi.mock("../supabase", () => ({
@@ -24,6 +25,10 @@ function mockSupabase(sessionToken: string | null) {
         data: { session: sessionToken ? { access_token: sessionToken } : null },
         error: null,
       }),
+      refreshSession: mockRefreshSession.mockResolvedValue({
+        data: { session: null },
+        error: null,
+      }),
     },
   } as unknown as SupabaseClient
 }
@@ -35,7 +40,7 @@ function mockFetchResponse(status: number, body: unknown, options?: { statusText
     statusText: options?.statusText ?? "",
     headers: new Headers({ "content-type": "application/json" }),
     json: () => Promise.resolve(body),
-  }
+  } as unknown as Response
 }
 
 function mockFetch204() {
@@ -45,7 +50,13 @@ function mockFetch204() {
     statusText: "No Content",
     headers: new Headers(),
     json: () => Promise.reject(new Error("no body")),
-  }
+  } as unknown as Response
+}
+
+// Extrai as opções da chamada feita ao fetch para inspeção nos asserts.
+function getRequestOptions(fetchSpy: { mock: { calls: unknown[][] } }) {
+  const [, options] = fetchSpy.mock.calls[0] ?? []
+  return options as RequestInit
 }
 
 // ---------------------------------------------------------------------------
@@ -73,7 +84,7 @@ describe("apiFetch — sucesso", () => {
   it("faz uma requisição GET e retorna o JSON", async () => {
     const body = { id: "abc", title: "Teste" }
     const mockRes = mockFetchResponse(200, body)
-    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(mockRes as Response)
+    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(mockRes)
 
     const data = await apiFetch("/api/test")
     expect(data).toEqual(body)
@@ -84,7 +95,7 @@ describe("apiFetch — sucesso", () => {
     const payload = { title: "Novo" }
     const body = { id: "1", ...payload }
     const mockRes = mockFetchResponse(201, body)
-    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(mockRes as Response)
+    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(mockRes)
 
     const data = await apiFetch("/api/test", {
       method: "POST",
@@ -101,7 +112,7 @@ describe("apiFetch — sucesso", () => {
   it("faz uma requisição PATCH com body parcial", async () => {
     const body = { id: "1", title: "Editado" }
     const mockRes = mockFetchResponse(200, body)
-    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(mockRes as Response)
+    vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(mockRes)
 
     const data = await apiFetch("/api/test/1", {
       method: "PATCH",
@@ -112,7 +123,7 @@ describe("apiFetch — sucesso", () => {
   })
 
   it("retorna undefined para 204 No Content (DELETE)", async () => {
-    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(mockFetch204() as Response)
+    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(mockFetch204())
 
     const result = await apiFetch("/api/test/1", { method: "DELETE" })
 
@@ -129,7 +140,7 @@ describe("apiFetch — baseURL", () => {
     })
 
     const mockRes = mockFetchResponse(200, [])
-    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(mockRes as Response)
+    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(mockRes)
 
     await apiFetch("/api/tickets")
 
@@ -143,7 +154,7 @@ describe("apiFetch — baseURL", () => {
     })
 
     const mockRes = mockFetchResponse(200, {})
-    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(mockRes as Response)
+    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(mockRes)
 
     await apiFetch("/api/tickets")
 
@@ -159,11 +170,11 @@ describe("apiFetch — Bearer token injection", () => {
     })
 
     const mockRes = mockFetchResponse(200, [])
-    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(mockRes as Response)
+    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(mockRes)
 
     await apiFetch("/api/test")
 
-    const calledHeaders = fetchSpy.mock.calls[0][1].headers as Headers
+    const calledHeaders = getRequestOptions(fetchSpy).headers as Headers
     expect(calledHeaders.get("Authorization")).toBe("Bearer jwt-token-valido")
   })
 
@@ -174,11 +185,11 @@ describe("apiFetch — Bearer token injection", () => {
     })
 
     const mockRes = mockFetchResponse(200, [])
-    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(mockRes as Response)
+    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(mockRes)
 
     await apiFetch("/api/test")
 
-    const calledHeaders = fetchSpy.mock.calls[0][1].headers as Headers
+    const calledHeaders = getRequestOptions(fetchSpy).headers as Headers
     expect(calledHeaders.has("Authorization")).toBe(false)
   })
 
@@ -194,12 +205,12 @@ describe("apiFetch — Bearer token injection", () => {
     })
 
     const mockRes = mockFetchResponse(200, [])
-    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(mockRes as Response)
+    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(mockRes)
 
     const data = await apiFetch("/api/test")
 
     expect(data).toEqual([])
-    const calledHeaders = fetchSpy.mock.calls[0][1].headers as Headers
+    const calledHeaders = getRequestOptions(fetchSpy).headers as Headers
     expect(calledHeaders.has("Authorization")).toBe(false)
   })
 })
@@ -207,36 +218,36 @@ describe("apiFetch — Bearer token injection", () => {
 describe("apiFetch — Content-Type header", () => {
   it("define Content-Type: application/json por padrão", async () => {
     const mockRes = mockFetchResponse(200, {})
-    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(mockRes as Response)
+    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(mockRes)
 
     await apiFetch("/api/test")
 
-    const calledHeaders = fetchSpy.mock.calls[0][1].headers as Headers
+    const calledHeaders = getRequestOptions(fetchSpy).headers as Headers
     expect(calledHeaders.get("Content-Type")).toBe("application/json")
   })
 
   it("preserva Content-Type customizado fornecido pelo caller", async () => {
     const mockRes = mockFetchResponse(200, {})
-    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(mockRes as Response)
+    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(mockRes)
 
     await apiFetch("/api/test", {
       headers: { "Content-Type": "text/plain" },
     })
 
-    const calledHeaders = fetchSpy.mock.calls[0][1].headers as Headers
+    const calledHeaders = getRequestOptions(fetchSpy).headers as Headers
     // O Content-Type fornecido pelo caller não deve ser sobrescrito
     expect(calledHeaders.get("Content-Type")).toBe("text/plain")
   })
 
   it("merge headers customizados com os padrão", async () => {
     const mockRes = mockFetchResponse(200, {})
-    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(mockRes as Response)
+    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(mockRes)
 
     await apiFetch("/api/test", {
       headers: { "X-Correlation-Id": "abc-123" },
     })
 
-    const calledHeaders = fetchSpy.mock.calls[0][1].headers as Headers
+    const calledHeaders = getRequestOptions(fetchSpy).headers as Headers
     expect(calledHeaders.get("Content-Type")).toBe("application/json")
     expect(calledHeaders.get("X-Correlation-Id")).toBe("abc-123")
   })
@@ -244,7 +255,6 @@ describe("apiFetch — Content-Type header", () => {
 
 describe("apiFetch — error handling", () => {
   it.each([
-    { status: 401, expectedError: ApiAuthError, expectedName: "ApiAuthError", expectedMessage: "Token inválido" },
     { status: 403, expectedError: ApiForbiddenError, expectedName: "ApiForbiddenError", expectedMessage: "Sem permissão" },
     { status: 404, expectedError: ApiNotFoundError, expectedName: "ApiNotFoundError", expectedMessage: "Recurso não encontrado" },
     { status: 409, expectedError: ApiConflictError, expectedName: "ApiConflictError", expectedMessage: "Conflito" },
@@ -254,15 +264,15 @@ describe("apiFetch — error handling", () => {
     { status: 400, expectedError: ApiError, expectedName: "ApiError", expectedMessage: "Requisição inválida" },
   ])("lança $expectedName para status $status", async ({ status, expectedError, expectedMessage, expectedStatus }) => {
     const mockRes = mockFetchResponse(status, { error: expectedMessage })
-    vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(mockRes as Response)
+    vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(mockRes)
 
     try {
       await apiFetch("/api/test")
       expect.unreachable("Deveria ter lançado exceção")
     } catch (error) {
       expect(error).toBeInstanceOf(expectedError)
-      expect((error as ApiError).message).toBe(expectedMessage)
-      expect((error as ApiError).status).toBe(expectedStatus ?? status)
+      expect((error as { message: string }).message).toBe(expectedMessage)
+      expect((error as { status?: number }).status).toBe(expectedStatus ?? status)
     }
   })
 
@@ -281,8 +291,72 @@ describe("apiFetch — error handling", () => {
       expect.unreachable("Deveria ter lançado exceção")
     } catch (error) {
       expect(error).toBeInstanceOf(ApiServerError)
-      expect((error as ApiError).message).toBe("Erro 500")
+      expect((error as { message: string }).message).toBe("Erro 500")
     }
+  })
+})
+
+describe("apiFetch — refresh automático em 401", () => {
+  it("tenta renovar a sessão UMA vez e refaz a requisição em caso de sucesso", async () => {
+    mockGetConfig.mockReturnValue({
+      baseURL: "",
+      supabase: mockSupabase("token-expirado"),
+    })
+    mockRefreshSession.mockResolvedValue({
+      data: { session: { access_token: "token-renovado" } },
+      error: null,
+    })
+
+    const authRes = mockFetchResponse(401, { error: "Token inválido" })
+    const okRes = mockFetchResponse(200, { ok: true })
+    const fetchSpy = vi
+      .spyOn(globalThis, "fetch")
+      .mockResolvedValueOnce(authRes)
+      .mockResolvedValueOnce(okRes)
+
+    const data = await apiFetch("/api/test")
+
+    expect(data).toEqual({ ok: true })
+    expect(fetchSpy).toHaveBeenCalledTimes(2)
+    expect(mockRefreshSession).toHaveBeenCalledTimes(1)
+  })
+
+  it("lança ApiAuthError quando o refresh falha (sessão expirada de verdade)", async () => {
+    mockGetConfig.mockReturnValue({
+      baseURL: "",
+      supabase: mockSupabase("token-expirado"),
+    })
+    mockRefreshSession.mockResolvedValue({
+      data: { session: null },
+      error: { message: "refresh_token expirado" },
+    })
+
+    vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(mockFetchResponse(401, { error: "Token inválido" }))
+
+    await expect(apiFetch("/api/test")).rejects.toBeInstanceOf(ApiAuthError)
+    expect(mockRefreshSession).toHaveBeenCalledTimes(1)
+  })
+
+  it("NÃO faz retry no segundo 401 (após refresh)", async () => {
+    mockGetConfig.mockReturnValue({
+      baseURL: "",
+      supabase: mockSupabase("token-expirado"),
+    })
+    mockRefreshSession.mockResolvedValue({
+      data: { session: { access_token: "token-renovado" } },
+      error: null,
+    })
+
+    const authRes = mockFetchResponse(401, { error: "Token inválido" })
+    const authRes2 = mockFetchResponse(401, { error: "Token inválido" })
+    const fetchSpy = vi
+      .spyOn(globalThis, "fetch")
+      .mockResolvedValueOnce(authRes)
+      .mockResolvedValueOnce(authRes2)
+
+    await expect(apiFetch("/api/test")).rejects.toBeInstanceOf(ApiAuthError)
+    expect(fetchSpy).toHaveBeenCalledTimes(2)
+    expect(mockRefreshSession).toHaveBeenCalledTimes(1)
   })
 })
 
@@ -300,14 +374,14 @@ describe("apiFetch — edge cases", () => {
 
   it("suporta array de headers (formato string[][])", async () => {
     const mockRes = mockFetchResponse(200, {})
-    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(mockRes as Response)
+    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(mockRes)
 
     // O formato string[][] é aceito pelo Headers() constructor
     await apiFetch("/api/test", {
       headers: [["X-Custom", "valor"]] as unknown as HeadersInit,
     })
 
-    const calledHeaders = fetchSpy.mock.calls[0][1].headers as Headers
+    const calledHeaders = getRequestOptions(fetchSpy).headers as Headers
     expect(calledHeaders.get("X-Custom")).toBe("valor")
     expect(calledHeaders.get("Content-Type")).toBe("application/json")
   })
