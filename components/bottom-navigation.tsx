@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { Suspense } from "react"
 import { useRouter, usePathname, useSearchParams } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { motion, AnimatePresence } from "motion/react"
@@ -44,6 +45,14 @@ const hiddenRoutes = [
 ]
 
 export default function BottomNav() {
+  return (
+    <Suspense fallback={null}>
+      <BottomNavContent />
+    </Suspense>
+  )
+}
+
+function BottomNavContent() {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
